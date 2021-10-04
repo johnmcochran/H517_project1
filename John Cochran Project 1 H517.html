@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>John Cochran Project 1 H517</title>
+		<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+	</head>
+
+	<body>
+		
+		<svg id = "map" width = "500" height="500" style="border:solid 1px black">
+			<text id='label' x='20' y='20'>Map </text>
+			<g transform='translate(20,40)'></g>
+		</svg>
+
+
+
+		<script type="text/javascript">
+			// Your beautiful D3 code will go here
+				var streetsegments = []; // array of segments of points
+				var everyx = []; // every x value for entire set of points
+				var everyy = []; // every y value for entire set of points
+				var points = []; // use in drawSegment function, where points is the current segment
+				function drawSegment(points){
+
+					var xScale = d3.scale.linear();
+					var yScale = d3.scale.linear();
+					var lowestx = d3.min(everyx);
+					var highestx = d3.max(everyx);
+					var lowesty = d3.min(everyy);
+					var highesty = d3.max(everyy);
+					var x1 = points[0]["x"];
+					var y1 = points[0]["y"];
+					var x2 = points[1]["x"];
+					var y2 = points[1]["y"];
+					var iterator = points.length - 1;
+
+					xScale
+						.domain([lowestx, highestx])
+						.range([20,480])
+					yScale
+						.domain([lowesty, highesty])
+						.range([20,480])
+					// iterates points.length - 1 times
+
+					// create group of lines
+
+					for (i=1;i<=iterator;i++){
+						// draw a line from points[i-1] to points[i]
+						x1 = points[i-1]["x"];
+						y1 = points[i-1]["y"];
+						x2 = points[i]["x"];
+						y2 = points[i]["y"];
+						
+
+						// draw line from x1,y1 to x2,y2 
+					}
+
+				}
+
+				d3.select("body")
+					.append("p")
+					.text("John Cochran Project 1 H517");
+			//load data
+				d3.json("streets.json", function(data) {
+					console.log(data);
+					console.log(data.length);
+					// build the data variables for use with map building function
+					for (var i=0; i<=data.length;i++){
+						//add each segment (group of points) to streetsegments
+						var currentsegment = data[i];
+						streetsegments.push(currentsegment); // each streetsegments index contains an array of point dictionaries. this will be used to build map
+
+						for (var j=0; j<=currentsegment.length;j++){
+							// go through each array of points
+							var currentarray = currentsegment[j];
+							for (var k=0; k<=currentarray.length;k++){
+								//go through each point
+								var currentpoint = currentarray[k];
+								everyx.push(+currentpoint["x"]);
+								everyy.push(+currentpoint["y"]);
+							}
+						}
+					}
+					// below from https://stackoverflow.com/questions/8689498/drawing-multiple-lines-in-d3-js
+					var line = d3.svg.line()
+    				.x(function(d) { return x(d.x); })
+    				.y(function(d) { return y(d.y); });
+
+					d3.select('svg')
+						.selectAll('path')
+						.data(data)
+						.enter()
+						.append('path')
+						.attr('d', line);
+					
+					// go through each segment
+					for (var i=0; i<=streetsegments.length;i++){
+						// draw segment for each array of points
+						drawSegment(streetsegments[i]);
+					}
+
+				})
+		</script>
+	</body>
+</html>
