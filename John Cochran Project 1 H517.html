@@ -1,5 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
+	<style>
+
+	.line {
+		fill:  none;
+		stroke:  steelblue;
+		stroke-width: 1px;
+	}
+	</style>
 	<head>
 		<meta charset="utf-8">
 		<title>John Cochran Project 1 H517</title>
@@ -8,98 +17,199 @@
 
 	<body>
 		
-		<svg id = "map" width = "500" height="500" style="border:solid 1px black">
-			<text id='label' x='20' y='20'>Map </text>
-			<g transform='translate(20,40)'></g>
+		<svg id = "map" width = "1000" height="500" style="border:solid 1px black">
+			<text id='label' x='50' y='20'>Map of Cholera Deaths and Pumps </text>
+			<text id='label1' x='50' y='40'>Deaths: Black Dots </text>
+			<text id='label2' x='50' y='60'>Pumps: Blue Dots </text>
+			<g transform='translate(20,80)'></g>
 		</svg>
 
 
 
 		<script type="text/javascript">
-			// Your beautiful D3 code will go here
+			// Spoke with Garrett Swearingen about the project
+			// For a C you need:
+
+//DONE A well drawn map of the area (streets and pumps) including the locations of the deaths
+//a timeline graph showing the number of deaths per day
+//ability to move the mouse over the timeline graph to choose which day to visualize - this should affect the deaths visible on the map and in the graph - at //minimum all cholera deaths prior to that date should be shown on the map and the graph
+//DONE the graph and the map should be stable (i.e., they should not move when new data is added or removed)
+//the graph and the map should be well labeled
+//you should check your visualization with a color blindness simulation tool to see that its OK
+//the map and graph should update quickly when the user interacts
+//an about screen with details on who wrote the project, where the data came from, etc.
+				d3.select("body")
+					.append("p")
+					.text("John Cochran Project 1 H517");
+
 				var streetsegments = []; // array of segments of points
 				var everyx = []; // every x value for entire set of points
 				var everyy = []; // every y value for entire set of points
 				var points = []; // use in drawSegment function, where points is the current segment
-				function drawSegment(points){
+				var lowestx = 0;
+				var highestx = 0;
+				var lowesty = 0;
+				var highesty = 0;
+				var xScale = 0;
+				var yScale = 0;
 
-					var xScale = d3.scale.linear();
-					var yScale = d3.scale.linear();
-					var lowestx = d3.min(everyx);
-					var highestx = d3.max(everyx);
-					var lowesty = d3.min(everyy);
-					var highesty = d3.max(everyy);
-					var x1 = points[0]["x"];
-					var y1 = points[0]["y"];
-					var x2 = points[1]["x"];
-					var y2 = points[1]["y"];
-					var iterator = points.length - 1;
-
-					xScale
-						.domain([lowestx, highestx])
-						.range([20,480])
-					yScale
-						.domain([lowesty, highesty])
-						.range([20,480])
-					// iterates points.length - 1 times
-
-					// create group of lines
-
-					for (i=1;i<=iterator;i++){
-						// draw a line from points[i-1] to points[i]
-						x1 = points[i-1]["x"];
-						y1 = points[i-1]["y"];
-						x2 = points[i]["x"];
-						y2 = points[i]["y"];
-						
-
-						// draw line from x1,y1 to x2,y2 
-					}
-
-				}
-
-				d3.select("body")
-					.append("p")
-					.text("John Cochran Project 1 H517");
-			//load data
+				// DONE: below draws segments within Map
+				function drawSegment(xscale,yscale, points){						
+					var selection = d3.select("svg")
+							.select("g")
+							.selectAll('line')
+							.data(points);
+					var g = d3.select('svg').select('g');		
+					var pathGenerator = d3.svg.line()
+    				.x(function(d) { return xscale(d.x); })
+    				.y(function(d) { return yscale(d.y); });
+					g.append('path')
+						.style('fill', 'none')
+						.style('stroke','black')
+						.attr('d',pathGenerator(points));				
+				}			
+				// DONE: draw Map
 				d3.json("streets.json", function(data) {
-					console.log(data);
-					console.log(data.length);
+					//console.log(data);
+					//.log(data.length);
 					// build the data variables for use with map building function
-					for (var i=0; i<=data.length;i++){
+					var xs = [];
+					var ys = [];					
+					for (var i=0; i<=(data.length-1);i++){
 						//add each segment (group of points) to streetsegments
 						var currentsegment = data[i];
 						streetsegments.push(currentsegment); // each streetsegments index contains an array of point dictionaries. this will be used to build map
+						for (var j=0; j<=(currentsegment.length - 1);j++){
+							//console.log(j);
+							//console.log(currentsegment[j]);
 
-						for (var j=0; j<=currentsegment.length;j++){
-							// go through each array of points
-							var currentarray = currentsegment[j];
-							for (var k=0; k<=currentarray.length;k++){
-								//go through each point
-								var currentpoint = currentarray[k];
-								everyx.push(+currentpoint["x"]);
-								everyy.push(+currentpoint["y"]);
-							}
-						}
-					}
-					// below from https://stackoverflow.com/questions/8689498/drawing-multiple-lines-in-d3-js
-					var line = d3.svg.line()
-    				.x(function(d) { return x(d.x); })
-    				.y(function(d) { return y(d.y); });
-
-					d3.select('svg')
-						.selectAll('path')
-						.data(data)
-						.enter()
-						.append('path')
-						.attr('d', line);
-					
+							xs.push(currentsegment[j].x);
+							ys.push(currentsegment[j].y)
+						}		
+					}			
+					lowestx = d3.min(xs, function(d){
+							return d;
+						});
+					highestx = d3.max(xs, function(d){
+							return d;
+						});
+					lowesty = d3.min(ys, function(d){
+							return d;
+						});
+					highesty = d3.max(ys, function(d){
+							return d;
+						});	
+					xScale = d3.scale.linear();
+					yScale = d3.scale.linear();
+					xScale
+						.domain([lowestx, highestx])
+						.range([0,400]);
+					yScale
+						.domain([lowesty, highesty])
+						.range([400,0]);									
 					// go through each segment
-					for (var i=0; i<=streetsegments.length;i++){
+					for (var i=0; i<(streetsegments.length - 1);i++){
 						// draw segment for each array of points
-						drawSegment(streetsegments[i]);
+						drawSegment(xScale, yScale, streetsegments[i]);
 					}
 
+				})
+			// DONE : draw pump function
+			function drawPump(xscale,yscale, point){
+					d3.select('svg').select('g').selectAll('circle')
+							.data(point)
+							.enter().append('circle')
+							.attr('cx', function(d){
+								//console.log(20);
+								return xscale(d.x);
+							})
+							.attr('cy', function(d){
+								return yscale(d.y);
+							})
+							.attr('r', 5)
+							.style('fill', 'steelblue');			
+				}
+			// DONE: Draw pumps
+				d3.csv('pumps.csv', function(data){	
+						drawPump(xScale,yScale,data);
+				})
+			// DONE: Draw deaths
+				function drawDeaths(xscale,yscale, point){
+					d3.select('svg').select('g').selectAll('circle')
+							.data(point)
+							.enter().append('circle')
+							.attr('cx', function(d){
+								//console.log(20);
+								return xscale(d.x);
+							})
+							.attr('cy', function(d){
+								return yscale(d.y);
+							})
+							.attr('r', 1.5)
+							.style('fill', 'black');
+				}
+			// Draw Deaths
+				d3.csv('deaths_age_sex.csv', function(data){
+						drawDeaths(xScale,yScale,data);
+				})
+			// TODO: Draw Timeline
+				function drawTimeline(xscale,yscale,datify, deathsdata){
+					console.log(deathsdata);
+					var g = d3.select('svg').select('g').selectAll('line').data(deathsdata);		
+					var pathGenerator = d3.svg.line()
+    				.x(function(d) { return xscale(datify(d.date)); })
+    				.y(function(d) { return yscale(d.deaths); });
+					g.append('path')
+						.style('fill', 'none')
+						.style('stroke','black')
+						.attr('d',pathGenerator(deathsdata));	
+				}
+				// Circles that will be used for interaction
+				function drawCircle(xscale,yscale, datify, point){
+						
+						console.log(datify(point[0].date));
+						//console.log(xscale(datify(point[0].date)));
+						d3.select('svg').select('g').selectAll('circle')
+								.data(point)
+								.enter().append('circle')
+								.attr('cx', function(d){
+									//console.log(20);
+									return xscale(datify(d.date));
+								})
+								.attr('cy', function(d){
+									return yscale(d.deaths);
+								})
+								.attr('r', 10)
+								.style('fill', 'black');			
+					}
+			// Create timeline of deaths
+			// referenced https://stackoverflow.com/questions/20833073/creating-a-d3-js-scatterplot-with-timeline-using-month-year-date-values
+				d3.csv('deathdays.csv', function(data){
+					
+					var parseDate = d3.time.format('%d-%b').parse; //WORKING
+					var mindate = parseDate('19-Aug'), //WORKING
+    					maxdate = parseDate("29-Sep"); // WORKING
+
+					var xScaleTime = d3.time.scale() // WORKING
+						.domain([mindate,maxdate])
+						.range([500,900]);
+					var yScaleTime = d3.scale.linear() // WORKING
+						.domain([0,d3.max(data,function(d){
+							return d.deaths;
+						})])
+						.range([400,0]);
+					console.log('mindate');
+					console.log(mindate);
+
+					console.log('firstdate');
+					console.log(data[0].date);
+
+					console.log('scaled first date');
+					console.log(xScaleTime(parseDate(data[0].date)));
+					//console.log('y');
+					//console.log(yScaleTime(4));
+					//drawTimeline(xScaleTime,yScaleTime,parseDate,data);
+					drawCircle(xScaleTime,yScaleTime,parseDate,data);
 				})
 		</script>
 	</body>
