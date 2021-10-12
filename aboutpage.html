@@ -1,0 +1,155 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:.5in;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:.5in;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:107%;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink="#954F72" style='word-wrap:break-word'>
+
+<div class=WordSection1>
+
+<a href="index.html">Click here to go back to visualization.</a>
+<p></p>
+<p class=MsoNormal><b>About the Project</b></p>
+
+<p class=MsoNormal>In 1854, a cholera epidemic led to the innovation of a
+visualization that assisted in finding the source of the outbreak. Dr. John
+Snow created a visualization which enabled the discovery of the source, a
+single water pump. This discovery led to improvements in public health policies
+related to water sanitation. This project seeks to recreate the visualization
+using d3.js. </p>
+
+<p class=MsoNormal>The data was provided by Professor Reda in the following
+format:</p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Map coordinates in the form of a json file with a list of arrays
+of points representing a segment, where each data point is a dictionary with an
+x value and a y value.</p>
+
+<p class=MsoNormal style='margin-left:.5in'>[</p>
+
+<p class=MsoNormal style='margin-left:.5in'>               [              </p>
+
+<p class=MsoNormal style='margin-left:.5in'>                              //
+segment 1</p>
+
+<p class=MsoNormal style='margin-left:.5in'>                              {x1,y1},
+</p>
+
+<p class=MsoNormal style='margin-left:.5in'>                              {x2,y2},
+</p>
+
+<p class=MsoNormal style='margin-left:.5in'>                              {x3,y3}</p>
+
+<p class=MsoNormal style='margin-left:.5in'>               ],</p>
+
+<p class=MsoNormal style='margin-left:.5in'>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'>               [</p>
+
+<p class=MsoNormal style='margin-left:.5in'>                              //
+segment 2 </p>
+
+<p class=MsoNormal style='margin-left:.5in'>                              {x1,y1},
+</p>
+
+<p class=MsoNormal style='margin-left:.5in'>                              {x2,y2}</p>
+
+<p class=MsoNormal style='margin-left:.5in'>               ],</p>
+
+<p class=MsoNormal style='margin-left:.5in'>               ...</p>
+
+<p class=MsoNormal style='margin-left:.5in'>] </p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Pump locations in csv file with x and y coordinates.</p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Date with corresponding number of deaths in csv file</p>
+
+<p class=MsoListParagraphCxSpLast style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Information about individual deaths were provided in csv file
+with x,y coordinates, age, and gender.</p>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+<a href="index.html">Click here to go back to visualization.</a>
+</div>
+
+</body>
+
+</html>

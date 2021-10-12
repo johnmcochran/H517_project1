@@ -11,18 +11,24 @@
 	</style>
 	<head>
 		<meta charset="utf-8">
-		<title>John Cochran Project 1 H517</title>
-		<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+
 	</head>
 
 	<body>
-		
-		<svg id = "map" width = "1000" height="600" style="border:solid 1px black">
+		<h1>John Cochran Project 1 H517</h1>
+		<a href="documentation.html">Documentation</a>
+		<br>
+		<a href="aboutpage.html">Information about the project</a>
+		<br>
+		<br>
+		<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+		<br>
+		<svg id = "map" width = "1200" height="600" style="border:solid 0px black">
 			<text id='label' x='50' y='20'>Map of Cholera Deaths and Pumps </text>
-			<text id='label1' x='50' y='40'>Deaths: Black Dots </text>
+			<text id='label1' x='50' y='40'>Deaths: Black Dots Male, Grey Dots Female </text>
 			<text id='label2' x='50' y='60'>Pumps: Blue Dots </text>
 			<g transform='translate(20,80)'></g>
-			<text id='label3' x='500' y='60'>Timeline of Deaths Each Day </text>
+			<text id='label3' x='500' y='60'>Timeline of Deaths Each Day (Hover mouse over timeline circles for interactive display on map!) </text>
 			<g transform='translate(50,80)'></g>
 			<text id='label4' x='450' y='300'>Deaths </text>
 			//Death timeline axes
@@ -34,7 +40,8 @@
 
 
 		</svg>
-
+		<br>
+		
 
 
 		<script type="text/javascript">
@@ -42,12 +49,12 @@
 			// For a C you need:
 
 //DONE A well drawn map of the area (streets and pumps) including the locations of the deaths
-//a timeline graph showing the number of deaths per day
-//ability to move the mouse over the timeline graph to choose which day to visualize - this should affect the deaths visible on the map and in the graph - at //minimum all cholera deaths prior to that date should be shown on the map and the graph
+//DONE a timeline graph showing the number of deaths per day
+//DONE ability to move the mouse over the timeline graph to choose which day to visualize - this should affect the deaths visible on the map and in the graph - at minimum all cholera deaths prior to that date should be shown on the map and the graph
 //DONE the graph and the map should be stable (i.e., they should not move when new data is added or removed)
 //DONE the graph and the map should be well labeled
-//you should check your visualization with a color blindness simulation tool to see that its OK
-//the map and graph should update quickly when the user interacts
+//DONE you should check your visualization with a color blindness simulation tool to see that its OK
+//DONE the map and graph should update quickly when the user interacts
 //an about screen with details on who wrote the project, where the data came from, etc.
 				d3.select("body")
 					.append("p")
@@ -63,6 +70,18 @@
 				var highesty = 0;
 				var xScale = 0;
 				var yScale = 0;
+				var datesarray = [];
+				var datesarray2 = [];  // array of dates, where count of each date is number of deaths
+
+				function createDates(data){
+						var newdates = []
+						for(var i = 0; i<=(data.length-1);i++){
+							for(var j=0;j<=(data[i].deaths-1);j++){
+								newdates.push(data[i].date);
+							}
+						}
+						return newdates;
+					}
 
 				// DONE: below draws segments within Map
 				function drawSegment(xscale,yscale, points){						
@@ -78,9 +97,7 @@
 				}			
 				// DONE: draw Map
 				d3.json("streets.json", function(data) {
-					//console.log(data);
-					//.log(data.length);
-					// build the data variables for use with map building function
+					
 					var xs = [];
 					var ys = [];					
 					for (var i=0; i<=(data.length-1);i++){
@@ -144,7 +161,11 @@
 						drawPump(xScale,yScale,data);
 				})
 			// DONE: Draw deaths
-				function drawDeaths(xscale,yscale, point){
+				function drawDeaths(xscale,yscale,datesarray3, point){
+					for(var i=0;i<=3;i++){
+						//console.log(datesarray3);
+					}
+
 					d3.select('svg').select('g').selectAll('.death')
 							.data(point)
 							.enter().append('circle')
@@ -156,14 +177,32 @@
 								return yscale(d.y);
 							})
 							.attr('r', 1.5)
-							.style('fill', 'black')
-							.attr('class','death');
+							.style('fill', function(d){
+								if(d.gender == 0){
+									return 'black';
+								}
+								else{
+									return 'grey';
+								}
+							})
+							.attr('class',function(d,i){
+									//console.log(datesarray);
+									return 'timeline_' + datesarray[i];
+								});
+
 				}
 			// Draw Deaths
-				d3.csv('deaths_age_sex.csv', function(data){
-						drawDeaths(xScale,yScale,data);
-				})
-			// TODO: Draw Timeline
+				d3.csv('deathdays.csv', function(data2){	
+					datesarray2 = createDates(data2);
+					//console.log(datesarray2);
+					d3.csv('deaths_age_sex.csv', function(data){
+							//console.log(datesarray2);
+							drawDeaths(xScale,yScale,datesarray2,data);
+						})
+								
+							
+					})
+			// DONE: Draw Timeline
 				function drawDeathLine(xscale,yscale,datify, points){						
 					//var selection = d3.select("svg")
 					//		.select("g")
@@ -183,7 +222,7 @@
 				}			
 
 				function drawTimeline(xscale,yscale,datify, deathsdata){
-					console.log(deathsdata);
+					//console.log(deathsdata);
 					var g = d3.select('svg').select('g').selectAll('.deathline').data(deathsdata);		
 					var pathGenerator = d3.svg.line()
     				.x(function(d) { return xscale(datify(d.date)); })
@@ -201,7 +240,7 @@
 				
 				function drawCircle(xscale,yscale, datify, point){
 						
-						d3.select('svg').select('g').selectAll('.pump2')
+						d3.select('svg').select('g').selectAll('.timelinedeaths')
 								.data(point)
 								.enter().append('circle')
 								.attr('cx', function(d){
@@ -213,12 +252,21 @@
 								})
 								.attr('r', 4)
 								.style('fill', 'black')
-								.attr('class','pump2');			
+								.attr('class','timelinedeaths')
+								.attr('id',function(d,i){
+									return 'timeline_' + point[i].date;
+								});
+
+
 					}
 			// Create timeline of deaths
 			// referenced https://stackoverflow.com/questions/20833073/creating-a-d3-js-scatterplot-with-timeline-using-month-year-date-values
 				d3.csv('deathdays.csv', function(data){
 					
+					datesarray = createDates(data);
+					
+					//console.log(datesarray);
+					// referenced http://using-d3js.com/04_04_working_with_dates.html
 					var parseDate = d3.time.format('%d-%b').parse; //WORKING
 					var mindate = parseDate('19-Aug'), //WORKING
     					maxdate = parseDate("29-Sep"); // WORKING
@@ -250,6 +298,71 @@
 
 					drawDeathLine(xScaleTime,yScaleTime,parseDate,data);
 					drawCircle(xScaleTime,yScaleTime,parseDate,data);
+					
+					// Interaction, baby! - referenced https://github.com/Olical/react-faux-dom/issues/29
+					var datesarray3 = [];
+					for(var i=0;i<=(data.length-1);i++){
+						datesarray3.push(data[i].date);
+					};
+							
+					
+					d3.select('svg').selectAll('.timelinedeaths')
+						.on('mouseover', function(d){
+							//console.log(this.id);
+							
+							d3.select('#'+this.id) // d.id should be 'timeline date1/2/3/etc.'
+								.style({'fill':'red'})
+								.attr('r',8);
+
+							d3.select('svg').selectAll('.'+this.id)
+								.style({'fill':'red'})
+								.attr('r',2);
+
+							//console.log('testingtesting');
+							//console.log(datesarray3);
+
+							var dayonly = this.id.substring(9);
+							//console.log(dayonly);
+							var indexer = datesarray3.indexOf(dayonly);
+							//console.log(indexer);
+							// may need to add if statement to skip if 0 deaths, i.e. indexer = -1
+							var newdatearraytothispoint = datesarray3.slice(0,indexer);
+							//console.log(newdatearraytothispoint);
+							for(var i=0;i<=(newdatearraytothispoint.length-1);i++){
+								d3.select('svg').selectAll('.timeline_'+newdatearraytothispoint[i])
+									.style({'fill':'red'});
+							}
+
+						})
+						.on('mouseout', function(d){
+							//console.log(5);
+							d3.select(this) // d.id should be 'timeline date1/2/3/etc.'
+								.style({'fill':'black'})
+								.attr('r',4);
+
+							d3.select('svg').selectAll('.'+this.id)
+								.style({'fill':'black'})
+
+							var dayonly = this.id.substring(9);
+							//console.log(dayonly);
+							var indexer = datesarray3.indexOf(dayonly);
+							//console.log(indexer);
+							// may need to add if statement to skip if 0 deaths, i.e. indexer = -1
+							var newdatearraytothispoint = datesarray3.slice(0,indexer);
+							//console.log(newdatearraytothispoint);
+
+							for(var i=0;i<=(newdatearraytothispoint.length-1);i++){
+								d3.select('svg').selectAll('.timeline_'+newdatearraytothispoint[i])
+									.style({'fill':function(d){
+										if(d.gender == 0){
+											return 'black';
+										}
+										else{
+											return 'grey';
+										}
+							}});
+							}
+						});
 				})
 		</script>
 	</body>
